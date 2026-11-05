@@ -1,0 +1,12 @@
+node_modules/
+dist/
+build/
+target/
+.venv/
+__pycache__/
+.env
+.env.*
+!.env.example
+*.log
+.idea/
+.vscode/
