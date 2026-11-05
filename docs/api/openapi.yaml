@@ -1,0 +1,104 @@
+openapi: 3.0.3
+info:
+  title: QuickNotes API
+  version: 1.0.0
+  description: Mirrors docs/api.md. No authentication.
+servers:
+  - url: /
+paths:
+  /api/notes:
+    get:
+      summary: List notes, newest first
+      responses:
+        '200':
+          description: All notes (created_at desc, id desc)
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Note' }
+    post:
+      summary: Create a note
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/NoteInput' }
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema: { type: string, example: /api/notes/1 }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Note' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+  /api/notes/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema: { type: integer, minimum: 1 }
+    put:
+      summary: Replace title and text of a note
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/NoteInput' }
+      responses:
+        '200':
+          description: Updated note
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Note' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    delete:
+      summary: Delete a note
+      responses:
+        '204':
+          description: Deleted
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+components:
+  schemas:
+    Note:
+      type: object
+      required: [id, title, text, created_at, updated_at]
+      properties:
+        id: { type: integer, minimum: 1 }
+        title: { type: string, minLength: 1, maxLength: 100 }
+        text: { type: string, maxLength: 10000 }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+    NoteInput:
+      type: object
+      required: [title]
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 100
+          description: Trimmed by the server before validation
+        text:
+          type: string
+          maxLength: 10000
+          default: ''
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error: { type: string, example: Title is required }
+  responses:
+    BadRequest:
+      description: Validation error, invalid id or malformed JSON
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    NotFound:
+      description: Note not found
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }

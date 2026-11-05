@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QuickNotes</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="container">
+    <h1>QuickNotes</h1>
+    <form id="note-form" class="card" novalidate>
+      <label for="title" class="sr-only">Title</label>
+      <input id="title" name="title" maxlength="100" required placeholder="Title" autocomplete="off">
+      <div class="field-row"><span id="title-error" class="error"></span><span id="title-count" class="meta">0/100</span></div>
+      <label for="text" class="sr-only">Text</label>
+      <textarea id="text" name="text" rows="4" placeholder="Write your note..."></textarea>
+      <button type="submit" id="add-btn" class="btn btn-primary" disabled>Add note</button>
+    </form>
+    <div id="error" class="banner" role="alert" hidden></div>
+    <section id="notes" aria-live="polite"></section>
+    <p id="empty" class="empty" hidden>No notes yet. Add your first note above.</p>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
